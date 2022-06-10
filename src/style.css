@@ -1,0 +1,130 @@
+/* author: Chetan Malviya */
+
+/* 
+This is for auth page
+
+ */
+
+.form-container{
+    margin-top: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
+
+    
+}
+.frm-label{
+    font: bolder;
+    text-decoration: solid;
+}
+.frm{
+    max-width: 450px;
+    box-shadow: 2px;
+    padding-bottom: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+    box-shadow: 1px 1px 15px 1px rgb(133, 135, 150);
+    border-radius: 5px;
+}
+
+.tile{
+    text-align: center;
+    padding-top: 5%;
+    padding-bottom: 10%;
+}
+
+
+.warn{
+    
+    color: #43b0ef;
+    
+    text-align: right;
+    margin-left: max(40%,60%);
+    margin-right: min(0px,2px);
+    
+}
+.btn-c{
+    display: flex;
+    align-content: center;  
+    align-items: center;
+    margin-left: 40%;  
+    margin-right: 40%;  
+   
+
+}
+
+
+.btn-f{
+    display: flex;
+    background-color: #43b0ef;
+}
+
+/* 
+This is for Candidate Pages
+*/
+
+
+
+.frm-cand{ 
+    display: flex;
+    box-shadow: 2px;
+    padding: auto;
+    box-shadow: 1px 1px 15px 1px rgb(133, 135, 150);
+    border-radius: 5px;
+    flex-flow: column wrap;
+    flex-wrap: wrap;
+}
+
+.btn-grp{
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.cand-btn{
+    display: flex;
+    flex-direction: row;
+}
+.btn-c{
+    text-align: center;  
+}
+.btn-cancel{
+    width: 30%;
+    margin:5% 5% 5% 0%;
+    color: black;
+
+}
+.btn-create{
+    width: 30%;
+
+    margin:5% 5% 5% 0%;
+    background-color: #43b0ef;
+}
+
+
+/* Candidate table */
+.can-list{
+
+margin-top: 2%;
+
+padding: auto;
+
+}
+.tb{
+    margin-top: 5%;
+}
+
+.lt:nth-child(odd){
+background-color: #43b0ef50;
+}
+
+.tabhead{
+    font-size: small;
+}
+
+.add{
+    align-items: right;
+    color: #43b0ef;
+   
+}
+.dpbtn{
+    background-color: inherit;
+}
