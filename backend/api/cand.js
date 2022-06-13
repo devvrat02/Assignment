@@ -1,137 +1,92 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 
-let cand = require('../data');
+const cors = require("cors");
+const mongoose =require('mongoose');
+const User = require('./models/user.model');
+const jwt =require('jsonwebtoken');
+app.use(cors())
+app.use(express.json())
 
-// for getting the data of all Candidates
-router.get("/", (req,res) => {
-    res.json(cand);
-});
-
-// for getting the data of Candidate by id
-
-
-router.get('/:id',(req,res)=>{
-    const found =cand.some(cand=>cand.id==parseInt(req.params.id))
-    if (found){
-        res.json(cand.filter(cand=>cand.id==parseInt(req.params.id)))
-    }
-    else 
-    {
-        res.sendStatus(404)
-    }
+mongoose.connect('mongodb://127.0.0.1:27017/deskala').then(()=>{
+    console.log('Connected Succesfully');
 })
 
-// for creating a new Candidate 
+app.use(express.urlencoded({extended:false}))
 
-router.post('/',(req,res)=>{
-    const newCand ={
-        id: cand.length+1,
-        Name : req.body.Name,
-        Email: req.body.Email,
-        DoB: req.body.DoB,
-        Age: req.body.Age,
-        Address: req.body.Address,
-        State: req.body.State,
-        Pin: req.body.Pin,
-        Result: "Shortlist",
+// Here the api calls that i Implemented with json For crud operation with candidate details.
+app.use('/cand',require('./api/cand'));
+
+// Registeration/Sign UP and Register a new user to database 
+app.post('/api/register',async(req,res)=>{
+    console.log(req.body);
+    try { 
+        await User.create({
+            name : req.body.Email,       
+            email: req.body.Email,
+            password: req.body.Pass,
+            No: req.body.Number,
+        })
+        console.log("data updated")
+        res.json({status : 'ok'});
     }
-    if(!newCand.Name || !newCand.Email){
-        return res.sendStatus(400)
+     catch (error) {
+        res.json({status : 'error'});
     }
-    cand.push(newCand)
-    res.json({status: "ok",cand})
+   
 })
 
 
 
-
-
-// for updating the state of Candidate by id
-
-router.put('/state/:id',(req,res)=>{
-    const found =cand.some(cand=>cand.id==parseInt(req.params.id))
-    if (found){
-        const updateCand={
-            id: req.params.id,
-            Result: req.body.status,
-        };
-        console.log(updateCand.Result)
-        cand=cand.map(cand=>{
-            if(cand.id==updateCand.id){
-            return  {...cand, Result :updateCand.Result}
-            }
-            return cand;
-        }
-        )
-      
-        res.json({status:"ok" ,msg: 'User updated'})
-       
-       
+// Decode jwt token NOT Perfectly connected to all apis but a static prefec is set
+app.get('/api/login',async(req,res)=>{
+    const token =req.header['x-access-token']
+    try {
+        const decoded =jwt.verify(token,'secret')
+        const email = decoded.email;
+        const user = await User.findOne({ email: email })
+        return {status :'ok', user: user.name}
+    } catch (error) {
+        console.log(error);
+        res.json({status :'error', error : 'invalid token'})
     }
-    else 
-    {
-        res.sendStatus(404)
+    
+})
+
+
+// Log in /Sign IN and Login user to database 
+
+app.post('/api/login',async(req,res)=>{
+    console.log(req.body);
+    try {
+    const user = await User.collection.findOne({     
+            email: req.body.Email,
+            password: req.body.Pass,
+        })
+        console.log("User Exist")
+        
+        if(user){
+            const token =jwt.sign({
+                email :user.email 
+            },'secret')
+     
+        res.json({status : 'ok',user : token});
+    } 
+    else {
+        res.json({status : 'error', user : false});
+        
     }
+}catch(error){
+    console.log(error);
+    res.json({status :'error', 'msg' : error})
+}
+
 })
 
 
 
-
-
-// for updating the data of user by id
-router.put('/:id',(req,res)=>{
-    const found =cand.some(cand=>cand.id==parseInt(req.params.id))
-    if (found){
-        const updateCand={
-            id: req.params.id,
-            Name : req.body.Name,
-            Email: req.body.Email,
-            DoB: req.body.DoB,
-            Age: req.body.Age,
-            Address: req.body.Address,
-            State: req.body.State,
-            Pin: req.body.Pin,
-            Result: req.body.Result,
-        };
-        cand=cand.map(cand=>{
-            if(cand.id==updateCand.id){
-            return  updateCand;
-            }
-            else{
-            return cand;}
-        }
-        )
-      
-        res.json({status:"ok" ,msg: 'User updated'})
-       
-       
-    }
-    else 
-    {
-        res.sendStatus(404)
-    }
+var server = app.listen(8080, function() {
+    var host = server.address().address
+    var port = server.address().port
+    console.log("Example app listening at http://localhost:%s", port)
 })
-
-
-
-
-
-
-// for deleting the data of user by id
-router.delete ('/:id',(req,res)=>{
-    const found =cand.map(cand=>cand.id==parseInt(req.params.id))
-    console.log(found)
-    if (found){
-        cand =cand.filter(cand=>{return(cand.id !=parseInt(req.params.id))})
-        res.json({msg:"User deleted"})
-        console.log(cand)
-    }
-    else 
-    {
-        res.sendStatus(404)
-    }
-})
-
-
-module.exports =router

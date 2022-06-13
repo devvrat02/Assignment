@@ -29,9 +29,9 @@ app.post('/api/register',async(req,res)=>{
         })
         console.log("data updated")
         res.json({status : 'ok'});
-    } catch (error) {
+    }
+     catch (error) {
         res.json({status : 'error'});
-        
     }
    
 })
@@ -58,23 +58,29 @@ app.get('/api/login',async(req,res)=>{
 
 app.post('/api/login',async(req,res)=>{
     console.log(req.body);
-    
+    try {
     const user = await User.collection.findOne({     
             email: req.body.Email,
             password: req.body.Pass,
         })
-
+        console.log("User Exist")
+        
         if(user){
             const token =jwt.sign({
-                email : req.user.Email 
+                email :user.email 
             },'secret')
-        console.log("User Exist")
+     
         res.json({status : 'ok',user : token});
     } 
     else {
         res.json({status : 'error', user : false});
         
     }
+}catch(error){
+    console.log(error);
+    res.json({status :'error', 'msg' : error})
+}
+
 })
 
 

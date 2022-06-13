@@ -43,7 +43,7 @@ export default function Login(){
 
               <Form.Group className="mb-3" controlId="Password">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control className="frm-inp"  size="lg" type="password" placeholder="Password" minLength="10"  value={Pass} onChange={handlePass} />
+                  <Form.Control className="frm-inp"  size="lg" type="password" placeholder="Password" minLength="8"  value={Pass} onChange={handlePass} />
                   <span className="warn " >Min 8 characters limit.</span>
               </Form.Group>
 
