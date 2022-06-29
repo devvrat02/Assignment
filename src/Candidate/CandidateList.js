@@ -105,19 +105,45 @@ function Row(props){
 }
 
 function CandidateList() {
+  let token =localStorage.getItem('token');
+  const auth=async()=>{
+    let token =localStorage.getItem('token');
+      
+       const resp= await fetch('http://localhost:8080/api/auth/',{
+         method:'GET',
+         headers : {
+           'x-access-token': token,
+           'Content-Type' : 'application/json',
+         },
+     })
+     const data =await resp.json()
+     console.log("data",data)
+     if(data.status!=="ok"){
+       window.location.href='/';
+     }
+     }
+     React.useEffect(()=>{auth()},[])
+
+
+
+
+
+
+
+
   const [Candidate ,setCandidate]=React.useState(['']);
   const person=async()=>{
     const resp= await fetch('http://localhost:8080/cand/',{
       method:'GET',
       headers : {
-          'Content-Type' : 'application/json',
+        'x-access-token': token,
+        'Content-Type' : 'application/json',
       },
   })
   const data =await resp.json()
   setCandidate(data)
-  
   }
-  
+
   React.useEffect(()=>{person()},[state]);
   const navigate = useNavigate();
     return (  <>

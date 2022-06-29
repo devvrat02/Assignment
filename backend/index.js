@@ -39,8 +39,8 @@ app.post('/api/register',async(req,res)=>{
 
 
 // Decode jwt token NOT Perfectly connected to all apis but a static prefec is set
-app.get('/api/login',async(req,res)=>{
-    const token =req.header['x-access-token']
+app.get('/api/auth',async(req,res)=>{
+    const token =req.headers['x-access-token']
     try {
         const decoded =jwt.verify(token,'secret')
         const email = decoded.email;
@@ -57,7 +57,7 @@ app.get('/api/login',async(req,res)=>{
 // Log in /Sign IN and Login user to database 
 
 app.post('/api/login',async(req,res)=>{
-    console.log(req.body);
+    console.log("login" ,req.body);
     try {
     const user = await User.collection.findOne({     
             email: req.body.Email,

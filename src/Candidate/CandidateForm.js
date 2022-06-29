@@ -2,6 +2,36 @@ import { Container,Form,Button } from "react-bootstrap";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
 function CandidateForm(props) {
+
+    const auth=async()=>{
+     let token =localStorage.getItem('token');
+
+        const resp= await fetch('http://localhost:8080/api/auth/',{
+          method:'GET',
+          headers : {
+            'x-access-token': token,
+            'Content-Type' : 'application/json',
+          },
+      })
+      const data =await resp.json()
+      console.log("data",data)
+      if(data.status!=="ok"){
+        window.location.href='/';
+      }
+      }
+      React.useEffect(()=>{auth()},[])
+
+
+
+      function getAge(dateString) {
+        var dt=new Date(dateString);
+        var birthYear= dt.getFullYear();
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var     age = currentYear - birthYear;
+        return age;
+     }
+
     let person =props.info;
     const navigate = useNavigate();
     const [Candidate, setCandidate] = React.useState({
@@ -16,13 +46,17 @@ function CandidateForm(props) {
         Result: person.Result
     }
     );   
+    const [dat,setdate]=React.useState(true);
     const handleChange = (props) => (event) => {
         if (event.target.value !== null) {
             setCandidate({
                 ...Candidate, [props]: event.target.value
             })
         }
+        if (props==="Dob"){setdate(!dat)}
     }
+
+
     const handleUpdate =(e)=>{
         async function UpdateUser (){
             const { Name,id,DoB,Age,Email,Address,State,Pin,Result} =Candidate;
@@ -98,7 +132,12 @@ function CandidateForm(props) {
         navigate('/CandidateL');
     }
     
-
+    React.useEffect(()=>{ 
+        setCandidate({
+            ...Candidate, ['Age']: getAge(Candidate.DoB)
+        })
+    },
+    [dat]);
     return (
         <div className="form-container">
         <Container className=" mt-5 p-4 frm-cand" >
@@ -115,7 +154,7 @@ function CandidateForm(props) {
 
               <Form.Group className="mb-3 mt-3" >
                   <Form.Label>Date of Birth</Form.Label>
-                  <Form.Control type="text" size="lg"  placeholder="Enter DoB" required value={Candidate.DoB} onChange={handleChange('DoB')}/>
+                  <Form.Control type="Date"  size="lg"  placeholder="Enter DoB" required value={Candidate.DoB} onChange={handleChange('DoB')}/>
               </Form.Group>
 
               <Form.Group className="mb-3 mt-3" controlId="Age">

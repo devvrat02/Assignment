@@ -29,6 +29,9 @@ export default function Login(){
             else console.log("error")
           
         }
+        function Registration(){
+            window.location.href='/Register'
+        }
 
     return(
     <div className="form-container">
@@ -48,10 +51,12 @@ export default function Login(){
               </Form.Group>
 
               <center>
-                  <Button className="btn-f mb-4 mt-2 center" size="lg" variant="primary" type="submit">
+                  <Button className="btn-f  mt-2 center" size="lg" variant="primary" type="submit">
                     Login
                   </Button>
               </center>
+              <center><span className="mb-4 text-success" onClick={Registration}>Registration</span></center>
+              
               </Form>
               </div>
 

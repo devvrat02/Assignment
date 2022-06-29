@@ -51,7 +51,10 @@ export default function Register(){
     
     }
     }
-    
+
+    const login=()=>{
+        window.location.href='/';
+    }
 
     return( 
     <div className="form-container">
@@ -77,10 +80,11 @@ export default function Register(){
           </Form.Group>
 
           <center>
-              <Button className="btn-f mb-4 mt-2 center" size="lg" variant="primary" type="submit">
+              <Button className="btn-f mt-2 center" size="lg" variant="primary" type="submit">
                 Sign Up
               </Button>
           </center>
+          <center><span className="mb-4 text-success" onClick={login}>Login</span></center>
           </Form>
           </div>
 
