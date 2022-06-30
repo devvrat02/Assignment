@@ -28,7 +28,7 @@ function CandidateForm(props) {
         var birthYear= dt.getFullYear();
         var currentDate = new Date();
         var currentYear = currentDate.getFullYear();
-        var     age = currentYear - birthYear;
+        var age = currentYear - birthYear;
         return age;
      }
 
@@ -97,7 +97,7 @@ function CandidateForm(props) {
             async function registerUser(){
                 const { Name,DoB,Age,Address,State,Pin}=Candidate;
                 const resp= await fetch('http://localhost:8080/cand/',{
-                        method:'PUT',
+                        method:'POST',
                         headers : {
                             'Content-Type' : 'application/json',
                         },

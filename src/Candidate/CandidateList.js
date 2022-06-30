@@ -163,7 +163,7 @@ function CandidateList() {
     </tr>
     </thead>
          <tbody>
-            {Candidate.map((val)=> ( <Row key={val.id} Data={val}/> ))}
+            {Candidate.map((val)=> ( <Row key={val._id} Data={val}/> ))}
         </tbody>
     </Table>
     

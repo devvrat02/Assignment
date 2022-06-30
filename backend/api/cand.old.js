@@ -2,31 +2,27 @@ const express = require('express');
 const router = express.Router();
 
 let cand = require('../data');
-const Cand = require('../models/cand.model');
-
 
 // for getting the data of all Candidates
-router.get("/", async(req,res) => {
+router.get("/", (req,res) => {
     try {
-        let data =await Cand.find();
-        console.log(data)
-        res.json(data);    
+        res.json(cand);    
     } catch (error) {
-        res.json({status:"error" ,msg: error})   
+        res.json({status:"error" ,msg: error})
+        
     }    
     
- 
+
 });
 
 // for getting the data of Candidate by id
 
 
-router.get('/:id',async(req,res)=>{
-    try { 
-        let data=await Cand.findOne({id:req.params.id})
-        console.log("req",data);
-      if (data){
-           res.json(data);
+router.get('/:id',(req,res)=>{
+    try {
+        const found =cand.some(cand=>cand.id==parseInt(req.params.id))
+        if (found){
+            res.json(cand.filter(cand=>cand.id==parseInt(req.params.id)))
         }
         else 
         {
@@ -42,13 +38,10 @@ router.get('/:id',async(req,res)=>{
 
 // for creating a new Candidate 
 
-router.post('/',async(req,res)=>{
+router.post('/',(req,res)=>{
    try {
-    let data =await Cand.find();
-    const length= data.length;
-    console.log(length)
     const newCand ={
-        id: length+1,
+        id: cand.length+1,
         Name : req.body.Name,
         Email: req.body.Email,
         DoB: req.body.DoB,
@@ -58,32 +51,44 @@ router.post('/',async(req,res)=>{
         Pin: req.body.Pin,
         Result: "Shortlist",
     }
-    await Cand.create(newCand);
     if(!newCand.Name || !newCand.Email){
         return res.sendStatus(400)
     }
-    res.json({status: "ok",data})
+    cand.push(newCand)
+    res.json({status: "ok",cand})
    } catch (error) {
     return res.json({status: "error",error : error})
+
    } 
     
 })
 
 
 
+
+
 // for updating the state of Candidate by id
 
-router.put('/state/:id',async(req,res)=>{
-    let data=await Cand.findOne({id:req.params.id})
-    if (data){
+router.put('/state/:id',(req,res)=>{
+    const found =cand.some(cand=>cand.id==parseInt(req.params.id))
+    if (found){
         const updateCand={
+            id: req.params.id,
             Result: req.body.status,
         };
         console.log(updateCand.Result)
-        Cand.updateOne({id:req.params.id},updateCand,(err,res)=>{if (err) throw err ; })
+        cand=cand.map(cand=>{
+            if(cand.id==updateCand.id){
+            return  {...cand, Result :updateCand.Result}
+            }
+            return cand;
+        }
+        )
+      
         res.json({status:"ok" ,msg: 'User updated'})
        
-    }   
+       
+    }
     else 
     {
         res.sendStatus(404)
@@ -95,13 +100,16 @@ router.put('/state/:id',async(req,res)=>{
 
 
 // for updating the data of user by id
-router.put('/:id',async(req,res)=>{
+router.put('/:id',(req,res)=>{
 try {
-    let data=await Cand.findOne({id:req.params.id})
-    if (data){
+    
+    
+    const found =cand.some(cand=>cand.id==parseInt(req.params.id))
+    if (found){
         const updateCand={
             id: req.params.id,
             Name : req.body.Name,
+            Email: req.body.Email,
             DoB: req.body.DoB,
             Age: req.body.Age,
             Address: req.body.Address,
@@ -109,10 +117,17 @@ try {
             Pin: req.body.Pin,
             Result: req.body.Result,
         };
-        let newvalues = { $set: updateCand };
-        Cand.updateOne({id:req.params.id},newvalues,(err,res)=>{if (err) throw err ; })
-
-        res.json({status:"ok" ,msg: 'User updated'})        
+        cand=cand.map(cand=>{
+            if(cand.id==updateCand.id){
+                return  updateCand;
+            }
+            else{
+                return cand;}
+            }
+            )
+            
+            res.json({status:"ok" ,msg: 'User updated'})
+            
             
         }
         else 
@@ -133,15 +148,14 @@ try {
 
 
 // for deleting the data of user by id
-router.delete ('/:id',async(req,res)=>{
+router.delete ('/:id',(req,res)=>{
     try {
-        let data=await Cand.findOne({id:req.params.id})
-
-        console.log(data)
-        if (data){
-            Cand.deleteOne({id:req.params.id},(err)=>{if (err) throw err;})
+        const found =cand.map(cand=>cand.id==parseInt(req.params.id))
+        console.log(found)
+        if (found){
+            cand =cand.filter(cand=>{return(cand.id !=parseInt(req.params.id))})
             res.json({msg:"User deleted"})
-            console.log(data)
+            console.log(cand)
         }
         else 
         {
